@@ -252,17 +252,58 @@
   dateInput.value = now.getFullYear() + "-" + pad(now.getMonth() + 1) + "-" + pad(now.getDate());
   timeInput.value = pad(now.getHours()) + ":" + pad(now.getMinutes());
 
-  // UTC offset options, default to the browser's own local offset
-  var OFFSETS = [-12,-11,-10,-9.5,-9,-8,-7,-6,-5,-4.5,-4,-3.5,-3,-2,-1,0,1,2,3,3.5,4,4.5,5,5.5,5.75,6,6.5,7,8,8.75,9,9.5,10,10.5,11,12,12.75,13,14];
+  // UTC offset options, each paired with a major city on that offset, default
+  // to the browser's own local offset
+  var OFFSETS = [
+    { v: -12, city: "Baker Island" },
+    { v: -11, city: "Pago Pago" },
+    { v: -10, city: "Honolulu" },
+    { v: -9.5, city: "Marquesas Islands" },
+    { v: -9, city: "Anchorage" },
+    { v: -8, city: "Los Angeles" },
+    { v: -7, city: "Denver" },
+    { v: -6, city: "Chicago" },
+    { v: -5, city: "New York" },
+    { v: -4.5, city: "Caracas (historic)" },
+    { v: -4, city: "Santiago" },
+    { v: -3.5, city: "St. John's" },
+    { v: -3, city: "S\u00e3o Paulo" },
+    { v: -2, city: "South Georgia" },
+    { v: -1, city: "Azores" },
+    { v: 0, city: "London" },
+    { v: 1, city: "Paris" },
+    { v: 2, city: "Cairo" },
+    { v: 3, city: "Istanbul" },
+    { v: 3.5, city: "Tehran" },
+    { v: 4, city: "Dubai" },
+    { v: 4.5, city: "Kabul" },
+    { v: 5, city: "Karachi" },
+    { v: 5.5, city: "Delhi" },
+    { v: 5.75, city: "Kathmandu" },
+    { v: 6, city: "Dhaka" },
+    { v: 6.5, city: "Yangon" },
+    { v: 7, city: "Bangkok" },
+    { v: 8, city: "Hong Kong" },
+    { v: 8.75, city: "Eucla" },
+    { v: 9, city: "Tokyo" },
+    { v: 9.5, city: "Adelaide" },
+    { v: 10, city: "Sydney" },
+    { v: 10.5, city: "Lord Howe Island" },
+    { v: 11, city: "Honiara" },
+    { v: 12, city: "Auckland" },
+    { v: 12.75, city: "Chatham Islands" },
+    { v: 13, city: "Apia" },
+    { v: 14, city: "Kiritimati" }
+  ];
   var localOffset = -now.getTimezoneOffset() / 60;
   var closestOffset = OFFSETS.reduce(function (a, b) {
-    return Math.abs(b - localOffset) < Math.abs(a - localOffset) ? b : a;
-  });
+    return Math.abs(b.v - localOffset) < Math.abs(a.v - localOffset) ? b : a;
+  }).v;
   OFFSETS.forEach(function (o) {
     var opt = document.createElement("option");
-    opt.value = o;
-    opt.textContent = "UTC" + (o >= 0 ? "+" : "") + o;
-    if (o === closestOffset) opt.selected = true;
+    opt.value = o.v;
+    opt.textContent = "UTC" + (o.v >= 0 ? "+" : "") + o.v + " \u2014 " + o.city;
+    if (o.v === closestOffset) opt.selected = true;
     utcSelect.appendChild(opt);
   });
 
