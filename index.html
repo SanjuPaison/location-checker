@@ -26,127 +26,129 @@
     --lc-red: #ff5c6c;
     --lc-yellow: #ffcf5c;
     --lc-green: #3fe0a0;
-    max-width: 560px;
+    max-width: 760px;
     margin: 0 auto;
     background: radial-gradient(circle at 15% 0%, #201a3a 0%, #0f0d1a 55%), var(--lc-bg);
     color: var(--lc-ink);
     font-weight: 300;
-    letter-spacing: 1.5px;
-    font-size: 15px;
-    line-height: 1.55;
-    padding: 18px 18px 22px;
+    letter-spacing: 1.2px;
+    font-size: 17px;
+    line-height: 1.6;
+    padding: 26px 26px 30px;
   }
   #lc-root.lc-root * { box-sizing: border-box; }
 
-  .lc-header { text-align: center; margin-bottom: 10px; }
+  .lc-header { text-align: center; margin-bottom: 16px; }
   .lc-title {
-    font-size: 21px; font-weight: 700; letter-spacing: 0.5px; margin: 0 0 4px;
+    font-size: 36px; font-weight: 700; letter-spacing: 0.3px; margin: 0 0 6px;
     background: linear-gradient(90deg, var(--lc-accent), var(--lc-accent-2));
     -webkit-background-clip: text; background-clip: text; color: transparent;
   }
-  .lc-sub { font-size: 13px; color: var(--lc-sub); margin: 0; letter-spacing: 0.5px; }
+  .lc-sub { font-size: 16px; color: var(--lc-sub); margin: 0; letter-spacing: 0.4px; }
 
   .lc-card {
     border: 1px solid var(--lc-line);
-    border-radius: 20px;
-    padding: 14px 16px 16px;
-    margin-bottom: 10px;
+    border-radius: 22px;
+    padding: 20px 22px 22px;
+    margin-bottom: 16px;
     background: var(--lc-card);
   }
   .lc-card-label {
-    font-size: 11px; text-transform: uppercase; letter-spacing: 1.8px;
-    color: var(--lc-sub); font-weight: 700; margin: 0 0 10px;
+    font-size: 14px; text-transform: uppercase; letter-spacing: 1.6px;
+    color: var(--lc-sub); font-weight: 700; margin: 0 0 14px;
   }
-  .lc-row { display: flex; gap: 10px; margin-bottom: 10px; }
+  .lc-row { display: flex; gap: 14px; margin-bottom: 14px; }
   .lc-row:last-child { margin-bottom: 0; }
   .lc-field { flex: 1; min-width: 0; }
   .lc-field label {
-    display: block; font-size: 10.5px; color: var(--lc-sub);
-    text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;
+    display: block; font-size: 13px; color: var(--lc-sub);
+    text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 6px;
   }
   #lc-root input[type="date"], #lc-root input[type="time"], #lc-root input[type="text"],
   #lc-root select {
-    width: 100%; font-family: inherit; font-size: 14.5px; letter-spacing: 0.5px;
-    padding: 9px 10px; border: 1px solid var(--lc-line); border-radius: 12px;
+    width: 100%; font-family: inherit; font-size: 17px; letter-spacing: 0.3px;
+    padding: 12px 14px; border: 1px solid var(--lc-line); border-radius: 14px;
     background: #0f0d1a; color: var(--lc-ink);
     color-scheme: dark;
   }
   #lc-root input:focus, #lc-root select:focus { outline: 2px solid var(--lc-accent); outline-offset: 1px; }
 
-  .lc-geo-row { display: flex; gap: 8px; }
+  .lc-geo-row { display: flex; gap: 10px; }
   .lc-geo-row input { flex: 1; }
   button.lc-mini-btn {
     flex: 0 0 auto; border: 1px solid var(--lc-accent); color: var(--lc-accent);
-    background: transparent; border-radius: 12px; padding: 0 14px; font-size: 12.5px;
-    font-family: inherit; letter-spacing: 1px; cursor: pointer; white-space: nowrap;
+    background: transparent; border-radius: 14px; padding: 0 20px; font-size: 15px;
+    font-family: inherit; letter-spacing: 0.8px; cursor: pointer; white-space: nowrap;
   }
   button.lc-mini-btn:active { background: var(--lc-chip); }
-  .lc-geo-status { font-size: 11px; margin-top: 5px; min-height: 1.1em; letter-spacing: 0.3px; color: var(--lc-sub); }
+  .lc-geo-status { font-size: 13.5px; margin-top: 8px; min-height: 1.1em; letter-spacing: 0.2px; color: var(--lc-sub); }
   .lc-geo-status.lc-ok { color: var(--lc-green); }
   .lc-geo-status.lc-err { color: var(--lc-red); }
 
-  .lc-chips { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 8px; }
+  .lc-chips { display: flex; flex-wrap: wrap; gap: 9px; margin-top: 12px; }
   button.lc-chip {
-    font-family: inherit; font-size: 12px; letter-spacing: 0.8px;
-    padding: 7px 12px; border-radius: 999px; border: 1px solid var(--lc-line);
+    font-family: inherit; font-size: 14.5px; letter-spacing: 0.5px;
+    padding: 9px 16px; border-radius: 999px; border: 1px solid var(--lc-line);
     background: var(--lc-chip); color: var(--lc-ink); cursor: pointer;
   }
   button.lc-chip.lc-chip-active { background: linear-gradient(90deg, var(--lc-accent), var(--lc-accent-2)); border-color: transparent; color: #16101f; }
   button.lc-chip:active { transform: scale(0.97); }
 
   .lc-error {
-    margin-top: 10px; padding: 9px 12px; border-radius: 12px; font-size: 12.5px;
-    background: rgba(255,92,108,0.1); color: #ffb3ba; border: 1px solid rgba(255,92,108,0.35); letter-spacing: 0.4px;
+    margin-top: 14px; padding: 12px 16px; border-radius: 14px; font-size: 15px;
+    background: rgba(255,92,108,0.1); color: #ffb3ba; border: 1px solid rgba(255,92,108,0.35); letter-spacing: 0.3px;
   }
 
   /* Results — sits right under the header, always visible */
   .lc-meter-card {
-    text-align: center; border-radius: 22px; padding: 18px 14px 16px; margin-bottom: 10px;
+    text-align: center; border-radius: 26px; padding: 28px 22px 24px; margin-bottom: 16px;
     background: var(--lc-card); border: 1px solid var(--lc-line);
   }
   .lc-meter-loc {
-    font-size: 17px; font-weight: 700; letter-spacing: 0.6px; margin: 0 0 10px;
+    font-size: 24px; font-weight: 700; letter-spacing: 0.4px; margin: 0 0 16px;
     color: var(--lc-ink);
   }
-  .lc-gauge { position: relative; width: 148px; height: 82px; margin: 0 auto; }
+  .lc-gauge { position: relative; width: 200px; height: 110px; margin: 0 auto; }
   .lc-gauge svg { width: 100%; height: 100%; display: block; overflow: visible; }
   .lc-gauge-pct {
     position: absolute; bottom: 0; left: 0; right: 0; text-align: center;
-    font-size: 27px; font-weight: 700; letter-spacing: 0.5px;
+    font-size: 38px; font-weight: 700; letter-spacing: 0.3px;
   }
   .lc-gauge-word {
-    font-size: 11.5px; text-transform: uppercase; letter-spacing: 2px; font-weight: 700;
-    margin-top: 6px;
+    font-size: 14px; text-transform: uppercase; letter-spacing: 1.8px; font-weight: 700;
+    margin-top: 10px;
   }
 
-  .lc-tabs { display: flex; gap: 4px; margin-top: 14px; border-bottom: 1px solid var(--lc-line); }
+  .lc-tabs { display: flex; gap: 6px; margin-top: 22px; border-bottom: 1px solid var(--lc-line); }
   button.lc-tab {
-    flex: 1; font-family: inherit; font-size: 11px; text-transform: uppercase;
-    letter-spacing: 1.2px; font-weight: 700; color: var(--lc-sub);
+    flex: 1; font-family: inherit; font-size: 14px; text-transform: uppercase;
+    letter-spacing: 1px; font-weight: 700; color: var(--lc-sub);
     background: transparent; border: none; border-bottom: 2px solid transparent;
-    padding: 9px 2px; cursor: pointer;
+    padding: 12px 4px; cursor: pointer;
   }
   button.lc-tab.lc-tab-active { color: var(--lc-accent-2); border-bottom-color: var(--lc-accent-2); }
   .lc-tab-box {
-    text-align: left; margin-top: 10px; padding: 12px 14px; border-radius: 16px;
+    text-align: left; margin-top: 14px; padding: 18px 20px; border-radius: 18px;
     background: #0f0d1a; border: 1px solid var(--lc-line); min-height: 40px;
   }
-  .lc-tab-box p { margin: 0 0 8px; font-size: 13px; letter-spacing: 0.4px; color: var(--lc-ink); }
+  .lc-tab-box p { margin: 0 0 10px; font-size: 16px; letter-spacing: 0.3px; color: var(--lc-ink); }
   .lc-tab-box p:last-child { margin-bottom: 0; }
   .lc-sign-name { font-weight: 700; color: var(--lc-accent-2); }
   .lc-none { color: var(--lc-sub); font-style: italic; }
 
   .lc-legal {
-    margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--lc-line);
-    text-align: center; font-size: 11px; color: var(--lc-sub); letter-spacing: 0.6px;
+    margin-top: 24px; padding-top: 18px; border-top: 1px solid var(--lc-line);
+    text-align: center; font-size: 13.5px; color: var(--lc-sub); letter-spacing: 0.4px;
   }
   .lc-legal a { color: var(--lc-accent); text-decoration: none; }
   .lc-legal a:hover { text-decoration: underline; }
-  .lc-legal .lc-sep { margin: 0 5px; color: var(--lc-line); }
+  .lc-legal .lc-sep { margin: 0 7px; color: var(--lc-line); }
 
-  @media (max-width: 430px) {
-    #lc-root.lc-root { font-size: 13.5px; padding: 14px 12px 18px; }
-    .lc-title { font-size: 19px; }
+  @media (max-width: 480px) {
+    #lc-root.lc-root { font-size: 16px; padding: 18px 16px 22px; }
+    .lc-title { font-size: 28px; }
+    .lc-gauge { width: 170px; height: 96px; }
+    .lc-gauge-pct { font-size: 32px; }
   }
 </style>
 </head>
@@ -370,11 +372,11 @@
   // ambiguity where two different (large-arc, sweep) flag combinations can
   // resolve to two different circle centers and visibly "escape" the track.
   function gaugeSvg(pct, color) {
-    var cx = 74, cy = 74, r = 58, sw = 14;
+    var cx = 100, cy = 100, r = 78, sw = 19;
     var d = 'M ' + (cx - r) + ' ' + cy + ' A ' + r + ' ' + r + ' 0 1 1 ' + (cx + r) + ' ' + cy;
     var len = Math.PI * r;
     var offset = len * (1 - pct / 100);
-    return '<svg viewBox="0 0 148 82">' +
+    return '<svg viewBox="0 0 200 112">' +
       '<path d="' + d + '" fill="none" stroke="#2b2542" stroke-width="' + sw + '" stroke-linecap="round"/>' +
       '<path d="' + d + '" fill="none" stroke="' + color + '" stroke-width="' + sw + '" stroke-linecap="round" ' +
       'stroke-dasharray="' + len + ' ' + len + '" stroke-dashoffset="' + offset + '"/>' +
