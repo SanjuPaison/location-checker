@@ -72,7 +72,6 @@
     color-scheme: dark;
   }
   #lc-root input:focus, #lc-root select:focus { outline: 2px solid var(--lc-accent); outline-offset: 1px; }
-  .lc-required-note { font-size: 9px; color: var(--lc-sub); margin-top: 5px; letter-spacing: 0.3px; }
 
   .lc-geo-row { display: flex; gap: 6px; }
   .lc-geo-row input { flex: 1; }
@@ -95,12 +94,6 @@
   button.lc-chip.lc-chip-active { background: linear-gradient(90deg, var(--lc-accent), var(--lc-accent-2)); border-color: transparent; color: #16101f; }
   button.lc-chip:active { transform: scale(0.97); }
 
-  button.lc-here-btn {
-    width: 100%; margin-top: 6px; font-family: inherit; font-size: 10.5px;
-    letter-spacing: 1px; padding: 7px; border-radius: 8px; border: 1px dashed var(--lc-accent-2);
-    background: rgba(255,122,217,0.07); color: var(--lc-accent-2); cursor: pointer;
-  }
-
   .lc-error {
     margin-top: 8px; padding: 7px 9px; border-radius: 8px; font-size: 10.5px;
     background: rgba(255,92,108,0.1); color: #ffb3ba; border: 1px solid rgba(255,92,108,0.35); letter-spacing: 0.4px;
@@ -108,12 +101,15 @@
 
   /* Results — sits right under the header, always visible */
   .lc-meter-card {
-    text-align: center; border-radius: 16px; padding: 14px 10px 10px; margin-bottom: 8px;
+    text-align: center; border-radius: 16px; padding: 14px 10px 12px; margin-bottom: 8px;
     background: var(--lc-card); border: 1px solid var(--lc-line);
   }
-  .lc-meter-loc { font-size: 10.5px; color: var(--lc-sub); margin: 0 0 6px; letter-spacing: 0.5px; }
+  .lc-meter-loc {
+    font-size: 15px; font-weight: 700; letter-spacing: 0.6px; margin: 0 0 8px;
+    color: var(--lc-ink);
+  }
   .lc-gauge { position: relative; width: 128px; height: 72px; margin: 0 auto; }
-  .lc-gauge svg { width: 100%; height: 100%; display: block; }
+  .lc-gauge svg { width: 100%; height: 100%; display: block; overflow: visible; }
   .lc-gauge-pct {
     position: absolute; bottom: 0; left: 0; right: 0; text-align: center;
     font-size: 24px; font-weight: 700; letter-spacing: 0.5px;
@@ -123,20 +119,20 @@
     margin-top: 4px;
   }
 
-  details.lc-acc {
-    border-top: 1px solid var(--lc-line); text-align: left; margin-top: 8px; padding-top: 8px;
+  .lc-tabs { display: flex; gap: 4px; margin-top: 10px; border-bottom: 1px solid var(--lc-line); }
+  button.lc-tab {
+    flex: 1; font-family: inherit; font-size: 9.5px; text-transform: uppercase;
+    letter-spacing: 1.2px; font-weight: 700; color: var(--lc-sub);
+    background: transparent; border: none; border-bottom: 2px solid transparent;
+    padding: 7px 2px; cursor: pointer;
   }
-  details.lc-acc summary {
-    cursor: pointer; list-style: none; font-size: 10px; text-transform: uppercase;
-    letter-spacing: 1.8px; font-weight: 700; color: var(--lc-accent);
-    display: flex; align-items: center; justify-content: space-between;
+  button.lc-tab.lc-tab-active { color: var(--lc-accent-2); border-bottom-color: var(--lc-accent-2); }
+  .lc-tab-box {
+    text-align: left; margin-top: 8px; padding: 9px 10px; border-radius: 10px;
+    background: #0f0d1a; border: 1px solid var(--lc-line); min-height: 40px;
   }
-  details.lc-acc summary::-webkit-details-marker { display: none; }
-  details.lc-acc summary::after { content: '+'; font-size: 13px; color: var(--lc-sub); }
-  details.lc-acc[open] summary::after { content: '\2212'; }
-  details.lc-acc .lc-acc-body { padding-top: 6px; }
-  details.lc-acc p { margin: 0 0 6px; font-size: 11px; letter-spacing: 0.4px; color: var(--lc-ink); }
-  details.lc-acc p:last-child { margin-bottom: 0; }
+  .lc-tab-box p { margin: 0 0 6px; font-size: 11px; letter-spacing: 0.4px; color: var(--lc-ink); }
+  .lc-tab-box p:last-child { margin-bottom: 0; }
   .lc-sign-name { font-weight: 700; color: var(--lc-accent-2); }
   .lc-none { color: var(--lc-sub); font-style: italic; }
 
@@ -167,7 +163,7 @@
 
   <form id="lc-form">
     <div class="lc-card">
-      <p class="lc-card-label">Birth info</p>
+      <p class="lc-card-label">Date of birth</p>
       <div class="lc-row">
         <div class="lc-field">
           <label for="lc-bdate">Date</label>
@@ -180,11 +176,10 @@
       </div>
       <div class="lc-row">
         <div class="lc-field">
-          <label for="lc-utc">UTC offset at birth</label>
+          <label for="lc-utc">UTC offset at birth (required)</label>
           <select id="lc-utc"></select>
         </div>
       </div>
-      <p class="lc-required-note">Exact birth time is required — this can't be computed without it.</p>
     </div>
 
     <div class="lc-card">
@@ -194,7 +189,6 @@
         <button type="button" class="lc-mini-btn" id="lc-geo-btn">Locate</button>
       </div>
       <div class="lc-geo-status" id="lc-geo-status"></div>
-      <button type="button" class="lc-here-btn" id="lc-here-btn">Use my current location</button>
       <div class="lc-chips" id="lc-city-chips"></div>
     </div>
 
@@ -230,8 +224,10 @@
     { name: "Cairo", lat: 30.0444, lon: 31.2357 },
     { name: "Hanoi", lat: 21.0278, lon: 105.8342 },
     { name: "Vancouver", lat: 49.2827, lon: -123.1207 },
-    { name: "S\u00e3o Paulo", lat: -23.5505, lon: -46.6333 }
+    { name: "S\u00e3o Paulo", lat: -23.5505, lon: -46.6333 },
+    { name: "Rome", lat: 41.9028, lon: 12.4964 }
   ];
+  var DEFAULT_CITY = CITIES[2]; // London
 
   var form = document.getElementById("lc-form");
   var resultsEl = document.getElementById("lc-results");
@@ -242,18 +238,19 @@
   var placeInput = document.getElementById("lc-place");
   var geoBtn = document.getElementById("lc-geo-btn");
   var geoStatus = document.getElementById("lc-geo-status");
-  var hereBtn = document.getElementById("lc-here-btn");
   var chipsEl = document.getElementById("lc-city-chips");
 
-  var currentLat = null, currentLon = null, currentLabel = null, activeChip = null;
+  var currentLat = DEFAULT_CITY.lat, currentLon = DEFAULT_CITY.lon, currentLabel = DEFAULT_CITY.name;
+  var activeChip = null;
+  var activeTab = "sign";
+  var lastResult = null;
 
-  // ---- defaults: today's date/time and an approximate local position ----
-  // These are just starting points so a reading is visible immediately —
-  // they don't need to be precise, the person can change any of them.
+  function pad(n) { return n < 10 ? "0" + n : "" + n; }
+
+  // ---- defaults: today's date/time so a reading is visible immediately ----
   var now = new Date();
   dateInput.value = now.getFullYear() + "-" + pad(now.getMonth() + 1) + "-" + pad(now.getDate());
   timeInput.value = pad(now.getHours()) + ":" + pad(now.getMinutes());
-  function pad(n) { return n < 10 ? "0" + n : "" + n; }
 
   // UTC offset options, default to the browser's own local offset
   var OFFSETS = [-12,-11,-10,-9.5,-9,-8,-7,-6,-5,-4.5,-4,-3.5,-3,-2,-1,0,1,2,3,3.5,4,4.5,5,5.5,5.75,6,6.5,7,8,8.75,9,9.5,10,10.5,11,12,12.75,13,14];
@@ -275,6 +272,7 @@
     btn.type = "button";
     btn.className = "lc-chip";
     btn.textContent = c.name;
+    if (c === DEFAULT_CITY) { btn.classList.add("lc-chip-active"); activeChip = btn; }
     btn.addEventListener("click", function () {
       currentLat = c.lat; currentLon = c.lon; currentLabel = c.name;
       placeInput.value = c.name;
@@ -305,7 +303,7 @@
         if (!res || res.length === 0) throw new Error("Could not find that place.");
         currentLat = parseFloat(res[0].lat);
         currentLon = parseFloat(res[0].lon);
-        currentLabel = res[0].display_name;
+        currentLabel = res[0].display_name.split(",")[0];
         clearChipSelection();
         geoStatus.textContent = "Found: " + res[0].display_name.split(",").slice(0,2).join(",");
         geoStatus.className = "lc-geo-status lc-ok";
@@ -317,34 +315,6 @@
       });
   });
 
-  function useGeolocation(silent) {
-    if (!navigator.geolocation) {
-      if (!silent) { geoStatus.textContent = "Geolocation isn't available in this browser."; geoStatus.className = "lc-geo-status lc-err"; }
-      return;
-    }
-    if (!silent) { geoStatus.textContent = "Finding your location..."; geoStatus.className = "lc-geo-status"; }
-    navigator.geolocation.getCurrentPosition(function (pos) {
-      currentLat = pos.coords.latitude;
-      currentLon = pos.coords.longitude;
-      currentLabel = "Your current location";
-      placeInput.value = "";
-      clearChipSelection();
-      if (!silent) {
-        geoStatus.textContent = "Using your current location (" + currentLat.toFixed(2) + ", " + currentLon.toFixed(2) + ")";
-        geoStatus.className = "lc-geo-status lc-ok";
-      }
-      tryCompute();
-    }, function () {
-      if (!silent) { geoStatus.textContent = "Couldn't get your location. Check permissions."; geoStatus.className = "lc-geo-status lc-err"; }
-      else if (currentLat === null) {
-        // silent fallback so a reading is visible even without permission
-        currentLat = 0; currentLon = 0; currentLabel = "Default location — set yours below";
-        tryCompute();
-      }
-    }, { timeout: 6000 });
-  }
-  hereBtn.addEventListener("click", function () { useGeolocation(false); });
-
   [dateInput, timeInput, utcSelect].forEach(function (el) {
     el.addEventListener("change", tryCompute);
   });
@@ -352,17 +322,21 @@
   function showError(msg) { errorEl.textContent = msg; errorEl.style.display = "block"; }
   function clearError() { errorEl.style.display = "none"; errorEl.textContent = ""; }
 
+  // Robust semicircle gauge: both the track and the fill are the exact same
+  // path (so they're always perfectly concentric/aligned), and the fill's
+  // percentage is revealed with stroke-dasharray/dashoffset rather than by
+  // computing a second arc endpoint — that avoids the classic SVG arc
+  // ambiguity where two different (large-arc, sweep) flag combinations can
+  // resolve to two different circle centers and visibly "escape" the track.
   function gaugeSvg(pct, color) {
-    var cx = 64, cy = 64, r = 54;
-    var angle = Math.PI - (pct / 100) * Math.PI;
-    var x = cx + r * Math.cos(angle);
-    var y = cy - r * Math.sin(angle);
-    var largeArc = pct > 50 ? 1 : 0;
-    var bgPath = 'M ' + (cx - r) + ' ' + cy + ' A ' + r + ' ' + r + ' 0 1 1 ' + (cx + r) + ' ' + cy;
-    var fgPath = 'M ' + (cx - r) + ' ' + cy + ' A ' + r + ' ' + r + ' 0 ' + largeArc + ' 1 ' + x + ' ' + y;
-    return '<svg viewBox="0 0 128 72">' +
-      '<path d="' + bgPath + '" fill="none" stroke="#2b2542" stroke-width="12" stroke-linecap="round"/>' +
-      '<path d="' + fgPath + '" fill="none" stroke="' + color + '" stroke-width="12" stroke-linecap="round"/>' +
+    var cx = 64, cy = 64, r = 52, sw = 12;
+    var d = 'M ' + (cx - r) + ' ' + cy + ' A ' + r + ' ' + r + ' 0 1 1 ' + (cx + r) + ' ' + cy;
+    var len = Math.PI * r;
+    var offset = len * (1 - pct / 100);
+    return '<svg viewBox="0 0 128 68">' +
+      '<path d="' + d + '" fill="none" stroke="#2b2542" stroke-width="' + sw + '" stroke-linecap="round"/>' +
+      '<path d="' + d + '" fill="none" stroke="' + color + '" stroke-width="' + sw + '" stroke-linecap="round" ' +
+      'stroke-dasharray="' + len + ' ' + len + '" stroke-dashoffset="' + offset + '"/>' +
       '</svg>';
   }
 
@@ -373,7 +347,27 @@
     return d.innerHTML;
   }
 
+  function tabContent(tab, r) {
+    if (tab === "sign") {
+      return '<p><span class="lc-sign-name">' + r.sign + '</span> &middot; ' + r.degInSign.toFixed(1) + '&deg; &mdash; ' + SIGN_TEXT[r.sign] + '</p>';
+    }
+    if (tab === "aspects") {
+      if (r.planetAspects.length === 0) return '<p class="lc-none">No natal planets closely aspect this point here.</p>';
+      return r.planetAspects.map(function (a) {
+        return '<p>' + cap(a.planet) + ' ' + ASPECT_TONE[a.aspect] + ' this point &mdash; ' + PLANET_INFO[a.planet] + '.</p>';
+      }).join("");
+    }
+    if (tab === "midpoints") {
+      if (r.midpointHits.length === 0) return '<p class="lc-none">No natal midpoints land here.</p>';
+      return r.midpointHits.map(function (m) {
+        return '<p>This point sits on your ' + cap(m.a) + '/' + cap(m.b) + ' midpoint &mdash; ' + PLANET_INFO[m.a] + ' meets ' + PLANET_INFO[m.b] + '.</p>';
+      }).join("");
+    }
+    return "";
+  }
+
   function renderResults(r) {
+    lastResult = r;
     var colorHex = r.pct <= 30 ? "#ff5c6c" : (r.pct >= 70 ? "#3fe0a0" : "#ffcf5c");
     var word = r.pct <= 30 ? "Lower safety read" : (r.pct >= 70 ? "Higher safety read" : "Mixed safety read");
 
@@ -383,38 +377,31 @@
     html += '<div class="lc-gauge">' + gaugeSvg(r.pct, colorHex) + '<div class="lc-gauge-pct" style="color:' + colorHex + '">' + r.pct + '%</div></div>';
     html += '<div class="lc-gauge-word" style="color:' + colorHex + '">' + word + '</div>';
 
-    html += '<details class="lc-acc"><summary>Sign</summary><div class="lc-acc-body">';
-    html += '<p><span class="lc-sign-name">' + r.sign + '</span> &middot; ' + r.degInSign.toFixed(1) + '&deg; &mdash; ' + SIGN_TEXT[r.sign] + '</p>';
-    html += '</div></details>';
-
-    html += '<details class="lc-acc"><summary>Natal planet aspects</summary><div class="lc-acc-body">';
-    if (r.planetAspects.length === 0) {
-      html += '<p class="lc-none">No natal planets closely aspect this point here.</p>';
-    } else {
-      r.planetAspects.forEach(function (a) {
-        html += '<p>' + cap(a.planet) + ' ' + ASPECT_TONE[a.aspect] + ' this point &mdash; ' + PLANET_INFO[a.planet] + '.</p>';
-      });
-    }
-    html += '</div></details>';
-
-    html += '<details class="lc-acc"><summary>Midpoint hits</summary><div class="lc-acc-body">';
-    if (r.midpointHits.length === 0) {
-      html += '<p class="lc-none">No natal midpoints land here.</p>';
-    } else {
-      r.midpointHits.forEach(function (m) {
-        html += '<p>This point sits on your ' + cap(m.a) + '/' + cap(m.b) + ' midpoint &mdash; ' + PLANET_INFO[m.a] + ' meets ' + PLANET_INFO[m.b] + '.</p>';
-      });
-    }
-    html += '</div></details>';
-
+    html += '<div class="lc-tabs">' +
+      '<button type="button" class="lc-tab" data-tab="sign">Sign</button>' +
+      '<button type="button" class="lc-tab" data-tab="aspects">Aspects</button>' +
+      '<button type="button" class="lc-tab" data-tab="midpoints">Midpoints</button>' +
+      '</div>';
+    html += '<div class="lc-tab-box" id="lc-tab-box"></div>';
     html += '</div>';
     resultsEl.innerHTML = html;
+
+    var tabButtons = resultsEl.querySelectorAll(".lc-tab");
+    tabButtons.forEach(function (btn) {
+      if (btn.getAttribute("data-tab") === activeTab) btn.classList.add("lc-tab-active");
+      btn.addEventListener("click", function () {
+        activeTab = btn.getAttribute("data-tab");
+        tabButtons.forEach(function (b) { b.classList.remove("lc-tab-active"); });
+        btn.classList.add("lc-tab-active");
+        document.getElementById("lc-tab-box").innerHTML = tabContent(activeTab, lastResult);
+      });
+    });
+    document.getElementById("lc-tab-box").innerHTML = tabContent(activeTab, r);
   }
 
   function tryCompute() {
     clearError();
     if (!dateInput.value || !timeInput.value) return;
-    if (currentLat === null || currentLon === null) return;
 
     var bParts = dateInput.value.split("-").map(Number);
     var tParts = timeInput.value.split(":").map(Number);
@@ -424,7 +411,7 @@
       var utHour = tParts[0] + tParts[1] / 60 - utcOffset;
       var jd = LCAstro.julianDay(bParts[0], bParts[1], bParts[2], utHour);
       var result = LCAstro.computeReading(jd, currentLat, currentLon);
-      result.locationLabel = currentLabel || (currentLat.toFixed(2) + ", " + currentLon.toFixed(2));
+      result.locationLabel = currentLabel;
       renderResults(result);
     } catch (err) {
       showError(err.message || "Something went wrong computing this reading.");
@@ -470,8 +457,6 @@
     Opposition: "pulls against"
   };
 
-  // ---- initial state: try a silent geolocation, fall back if blocked ----
-  useGeolocation(true);
   tryCompute();
 })();
 </script>
