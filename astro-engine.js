@@ -10,7 +10,7 @@
  * Accuracy is roughly arc-minutes to about a degree for the outer
  * planets — more than enough for aspect orbs of a few degrees.
  *
- * Rn point definition (per spec): Rn = RelocatedAscendant - 135 degrees,
+ * The location point is computed as RelocatedAscendant - 135 degrees,
  * where the "relocated" ascendant is computed using the birth date/time
  * (converted to Universal Time) but the CURRENT location's latitude and
  * longitude. Natal planet positions only depend on birth time, not
@@ -53,7 +53,9 @@
     var phi = toRad(latDeg);
     var y = -Math.cos(ramc);
     var x = Math.sin(ramc) * Math.cos(eps) + Math.tan(phi) * Math.sin(eps);
-    return norm360(toDeg(Math.atan2(y, x)));
+    // +180 correction: verified against real-world reference readings, the raw
+    // atan2 result here lands exactly opposite the correct ascendant.
+    return norm360(toDeg(Math.atan2(y, x)) + 180);
   }
 
   // ---- Sun geometric ecliptic longitude, degrees (Meeus low precision) ----
