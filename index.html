@@ -38,9 +38,9 @@
   }
   #lc-root.lc-root * { box-sizing: border-box; }
 
-  .lc-header { text-align: center; margin-bottom: 16px; }
+  .lc-header { text-align: center; margin-bottom: 10px; }
   .lc-title {
-    font-size: 36px; font-weight: 700; letter-spacing: 0.3px; margin: 0 0 6px;
+    font-size: 32px; font-weight: 700; letter-spacing: 0.3px; margin: 0;
     background: linear-gradient(90deg, var(--lc-accent), var(--lc-accent-2));
     -webkit-background-clip: text; background-clip: text; color: transparent;
   }
@@ -48,26 +48,27 @@
 
   .lc-card {
     border: 1px solid var(--lc-line);
-    border-radius: 22px;
-    padding: 20px 22px 22px;
-    margin-bottom: 16px;
+    border-radius: 20px;
+    padding: 14px 18px 16px;
+    margin-bottom: 10px;
     background: var(--lc-card);
   }
   .lc-card-label {
     font-size: 14px; text-transform: uppercase; letter-spacing: 1.6px;
-    color: var(--lc-sub); font-weight: 700; margin: 0 0 14px;
+    color: var(--lc-sub); font-weight: 700; margin: 0 0 8px;
   }
-  .lc-row { display: flex; gap: 14px; margin-bottom: 14px; }
+  .lc-card-label-mid { margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--lc-line); }
+  .lc-row { display: flex; gap: 12px; margin-bottom: 8px; }
   .lc-row:last-child { margin-bottom: 0; }
   .lc-field { flex: 1; min-width: 0; }
   .lc-field label {
     display: block; font-size: 13px; color: var(--lc-sub);
-    text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 6px;
+    text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 4px;
   }
   #lc-root input[type="date"], #lc-root input[type="time"], #lc-root input[type="text"],
   #lc-root select {
     width: 100%; font-family: inherit; font-size: 17px; letter-spacing: 0.3px;
-    padding: 12px 14px; border: 1px solid var(--lc-line); border-radius: 14px;
+    padding: 9px 12px; border: 1px solid var(--lc-line); border-radius: 12px;
     background: #0f0d1a; color: var(--lc-ink);
     color-scheme: dark;
   }
@@ -77,67 +78,67 @@
   .lc-geo-row input { flex: 1; }
   button.lc-mini-btn {
     flex: 0 0 auto; border: 1px solid var(--lc-accent); color: var(--lc-accent);
-    background: transparent; border-radius: 14px; padding: 0 20px; font-size: 15px;
+    background: transparent; border-radius: 12px; padding: 0 18px; font-size: 15px;
     font-family: inherit; letter-spacing: 0.8px; cursor: pointer; white-space: nowrap;
   }
   button.lc-mini-btn:active { background: var(--lc-chip); }
-  .lc-geo-status { font-size: 13.5px; margin-top: 8px; min-height: 1.1em; letter-spacing: 0.2px; color: var(--lc-sub); }
+  .lc-geo-status { font-size: 13.5px; margin-top: 5px; min-height: 1.1em; letter-spacing: 0.2px; color: var(--lc-sub); }
   .lc-geo-status.lc-ok { color: var(--lc-green); }
   .lc-geo-status.lc-err { color: var(--lc-red); }
 
-  .lc-chips { display: flex; flex-wrap: wrap; gap: 9px; margin-top: 12px; }
+  .lc-chips { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 8px; }
   button.lc-chip {
-    font-family: inherit; font-size: 14.5px; letter-spacing: 0.5px;
-    padding: 9px 16px; border-radius: 999px; border: 1px solid var(--lc-line);
+    font-family: inherit; font-size: 14px; letter-spacing: 0.5px;
+    padding: 7px 14px; border-radius: 999px; border: 1px solid var(--lc-line);
     background: var(--lc-chip); color: var(--lc-ink); cursor: pointer;
   }
   button.lc-chip.lc-chip-active { background: linear-gradient(90deg, var(--lc-accent), var(--lc-accent-2)); border-color: transparent; color: #16101f; }
   button.lc-chip:active { transform: scale(0.97); }
 
   .lc-error {
-    margin-top: 14px; padding: 12px 16px; border-radius: 14px; font-size: 15px;
+    margin-top: 10px; padding: 10px 14px; border-radius: 12px; font-size: 15px;
     background: rgba(255,92,108,0.1); color: #ffb3ba; border: 1px solid rgba(255,92,108,0.35); letter-spacing: 0.3px;
   }
 
   /* Results — sits right under the header, always visible */
   .lc-meter-card {
-    text-align: center; border-radius: 26px; padding: 28px 22px 24px; margin-bottom: 16px;
+    text-align: center; border-radius: 22px; padding: 16px 18px 16px; margin-bottom: 10px;
     background: var(--lc-card); border: 1px solid var(--lc-line);
   }
   .lc-meter-loc {
-    font-size: 24px; font-weight: 700; letter-spacing: 0.4px; margin: 0 0 16px;
+    font-size: 22px; font-weight: 700; letter-spacing: 0.4px; margin: 0 0 8px;
     color: var(--lc-ink);
   }
-  .lc-gauge { position: relative; width: 200px; height: 110px; margin: 0 auto; }
+  .lc-gauge { position: relative; width: 168px; height: 92px; margin: 0 auto; }
   .lc-gauge svg { width: 100%; height: 100%; display: block; overflow: visible; }
   .lc-gauge-pct {
     position: absolute; bottom: 0; left: 0; right: 0; text-align: center;
-    font-size: 38px; font-weight: 700; letter-spacing: 0.3px;
+    font-size: 32px; font-weight: 700; letter-spacing: 0.3px;
   }
   .lc-gauge-word {
-    font-size: 14px; text-transform: uppercase; letter-spacing: 1.8px; font-weight: 700;
-    margin-top: 10px;
+    font-size: 13px; text-transform: uppercase; letter-spacing: 1.6px; font-weight: 700;
+    margin-top: 6px;
   }
 
-  .lc-tabs { display: flex; gap: 6px; margin-top: 22px; border-bottom: 1px solid var(--lc-line); }
+  .lc-tabs { display: flex; gap: 6px; margin-top: 12px; border-bottom: 1px solid var(--lc-line); }
   button.lc-tab {
-    flex: 1; font-family: inherit; font-size: 14px; text-transform: uppercase;
+    flex: 1; font-family: inherit; font-size: 13.5px; text-transform: uppercase;
     letter-spacing: 1px; font-weight: 700; color: var(--lc-sub);
     background: transparent; border: none; border-bottom: 2px solid transparent;
-    padding: 12px 4px; cursor: pointer;
+    padding: 8px 4px; cursor: pointer;
   }
   button.lc-tab.lc-tab-active { color: var(--lc-accent-2); border-bottom-color: var(--lc-accent-2); }
   .lc-tab-box {
-    text-align: left; margin-top: 14px; padding: 18px 20px; border-radius: 18px;
+    text-align: left; margin-top: 10px; padding: 14px 16px; border-radius: 16px;
     background: #0f0d1a; border: 1px solid var(--lc-line); min-height: 40px;
   }
-  .lc-tab-box p { margin: 0 0 10px; font-size: 16px; letter-spacing: 0.3px; color: var(--lc-ink); }
+  .lc-tab-box p { margin: 0 0 8px; font-size: 16px; letter-spacing: 0.3px; color: var(--lc-ink); }
   .lc-tab-box p:last-child { margin-bottom: 0; }
   .lc-sign-name { font-weight: 700; color: var(--lc-accent-2); }
   .lc-none { color: var(--lc-sub); font-style: italic; }
 
   .lc-legal {
-    margin-top: 24px; padding-top: 18px; border-top: 1px solid var(--lc-line);
+    margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--lc-line);
     text-align: center; font-size: 13.5px; color: var(--lc-sub); letter-spacing: 0.4px;
   }
   .lc-legal a { color: var(--lc-accent); text-decoration: none; }
@@ -145,10 +146,10 @@
   .lc-legal .lc-sep { margin: 0 7px; color: var(--lc-line); }
 
   @media (max-width: 480px) {
-    #lc-root.lc-root { font-size: 16px; padding: 18px 16px 22px; }
-    .lc-title { font-size: 28px; }
-    .lc-gauge { width: 170px; height: 96px; }
-    .lc-gauge-pct { font-size: 32px; }
+    #lc-root.lc-root { font-size: 16px; padding: 14px 14px 18px; }
+    .lc-title { font-size: 26px; }
+    .lc-gauge { width: 150px; height: 84px; }
+    .lc-gauge-pct { font-size: 27px; }
   }
 </style>
 </head>
@@ -158,21 +159,19 @@
 
   <div class="lc-header">
     <h1 class="lc-title">Location Checker</h1>
-    <p class="lc-sub">Birth details + a place. See how it reads.</p>
   </div>
 
   <div class="lc-results" id="lc-results"></div>
 
   <form id="lc-form">
     <div class="lc-card">
-      <p class="lc-card-label">Date of birth</p>
       <div class="lc-row">
         <div class="lc-field">
-          <label for="lc-bdate">Date</label>
+          <label for="lc-bdate">Date of birth</label>
           <input type="date" id="lc-bdate" required min="1900-01-01" max="2060-12-31">
         </div>
         <div class="lc-field">
-          <label for="lc-btime">Time</label>
+          <label for="lc-btime">Time of birth</label>
           <input type="time" id="lc-btime" required>
         </div>
       </div>
@@ -182,10 +181,8 @@
           <select id="lc-utc"></select>
         </div>
       </div>
-    </div>
 
-    <div class="lc-card">
-      <p class="lc-card-label">Location</p>
+      <p class="lc-card-label lc-card-label-mid">Location</p>
       <div class="lc-geo-row">
         <input type="text" id="lc-place" placeholder="Type a city..." autocomplete="off">
         <button type="button" class="lc-mini-btn" id="lc-geo-btn">Locate</button>
@@ -372,11 +369,11 @@
   // ambiguity where two different (large-arc, sweep) flag combinations can
   // resolve to two different circle centers and visibly "escape" the track.
   function gaugeSvg(pct, color) {
-    var cx = 100, cy = 100, r = 78, sw = 19;
+    var cx = 84, cy = 84, r = 66, sw = 16;
     var d = 'M ' + (cx - r) + ' ' + cy + ' A ' + r + ' ' + r + ' 0 1 1 ' + (cx + r) + ' ' + cy;
     var len = Math.PI * r;
     var offset = len * (1 - pct / 100);
-    return '<svg viewBox="0 0 200 112">' +
+    return '<svg viewBox="0 0 168 94">' +
       '<path d="' + d + '" fill="none" stroke="#2b2542" stroke-width="' + sw + '" stroke-linecap="round"/>' +
       '<path d="' + d + '" fill="none" stroke="' + color + '" stroke-width="' + sw + '" stroke-linecap="round" ' +
       'stroke-dasharray="' + len + ' ' + len + '" stroke-dashoffset="' + offset + '"/>' +
