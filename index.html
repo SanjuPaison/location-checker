@@ -9,9 +9,10 @@
 <style>
   * { box-sizing: border-box; }
   html { -webkit-text-size-adjust: 100%; }
+  input, select, button { font-weight: 300; }
   html, body {
     margin: 0; padding: 0;
-    background: #0b0a13;
+    background: transparent;
     font-family: 'Open Sans', system-ui, sans-serif;
   }
   #lc-root.lc-root {
@@ -29,9 +30,12 @@
     max-width: 525px;
     margin: 0 auto;
     background: radial-gradient(circle at 15% 0%, #201a3a 0%, #0f0d1a 55%), var(--lc-bg);
+    border-radius: 28px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.45);
+    overflow: hidden;
     color: var(--lc-ink);
     font-weight: 300;
-    letter-spacing: 1.2px;
+    letter-spacing: 1.5px;
     font-size: 17px;
     line-height: 1.6;
     padding: 26px 26px 30px;
@@ -40,7 +44,7 @@
 
   .lc-header { text-align: center; margin-bottom: 10px; }
   .lc-title {
-    font-size: 32px; font-weight: 700; letter-spacing: 0.3px; margin: 0;
+    font-size: 32px; font-weight: 300; letter-spacing: 0.3px; margin: 0;
     background: linear-gradient(90deg, var(--lc-accent), var(--lc-accent-2));
     -webkit-background-clip: text; background-clip: text; color: transparent;
   }
