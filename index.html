@@ -4,171 +4,78 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Location Checker</title>
+
+<!-- Shared Pluto widget visual system — see STYLE-GUIDE.md -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://sanjupaison.github.io/pluto-phases-meter/pluto-style.css">
+
 <style>
-  * { box-sizing: border-box; }
-  html { -webkit-text-size-adjust: 100%; }
-  input, select, button { font-weight: 300; }
-  html, body {
-    margin: 0; padding: 0;
-    background: transparent;
-    font-family: 'Open Sans', system-ui, sans-serif;
-  }
-  #lc-root.lc-root {
-    --lc-ink: #f1eefc;
-    --lc-sub: #a49cc4;
-    --lc-bg: #0f0d1a;
-    --lc-card: #171326;
-    --lc-accent: #b18cff;
-    --lc-accent-2: #ff7ad9;
-    --lc-line: #2b2542;
-    --lc-chip: #1d1830;
-    --lc-red: #ff5c6c;
-    --lc-yellow: #ffcf5c;
-    --lc-green: #3fe0a0;
-    max-width: 525px;
-    margin: 0 auto;
-    background: radial-gradient(circle at 15% 0%, #201a3a 0%, #0f0d1a 55%), var(--lc-bg);
-    border-radius: 28px;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.45);
-    overflow: hidden;
-    color: var(--lc-ink);
-    font-weight: 300;
-    letter-spacing: 1.5px;
-    font-size: 17px;
-    line-height: 1.6;
-    padding: 26px 26px 30px;
-  }
-  #lc-root.lc-root * { box-sizing: border-box; }
+  /* ------------------------------------------------------------
+     Widget-specific supplemental rules only. Nothing here hardcodes
+     a color — everything pulls from the shared theme variables
+     (--bg-1, --card-border, --text-hi, --text-lo, --text-faint,
+     --accent, --bg-0, --radius-sm) so it stays in sync with
+     whichever data-theme is set on <body>.
+     ------------------------------------------------------------ */
 
-  .lc-header { text-align: center; margin-bottom: 10px; }
-  .lc-title {
-    font-size: 32px; font-weight: 300; letter-spacing: 0.3px; margin: 0;
-    background: linear-gradient(90deg, var(--lc-accent), var(--lc-accent-2));
-    -webkit-background-clip: text; background-clip: text; color: transparent;
-  }
-  .lc-sub { font-size: 16px; color: var(--lc-sub); margin: 0; letter-spacing: 0.4px; }
-
-  .lc-card {
-    border: 1px solid var(--lc-line);
-    border-radius: 20px;
-    padding: 14px 18px 16px;
-    margin-bottom: 10px;
-    background: var(--lc-card);
-  }
-  .lc-card-label {
-    font-size: 14px; text-transform: uppercase; letter-spacing: 1.6px;
-    color: var(--lc-sub); font-weight: 700; margin: 0 0 8px;
-  }
-  .lc-card-label-mid { margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--lc-line); }
-  .lc-row { display: flex; gap: 12px; margin-bottom: 8px; }
+  .lc-row { display: flex; gap: 10px; margin-bottom: 10px; }
   .lc-row:last-child { margin-bottom: 0; }
   .lc-field { flex: 1; min-width: 0; }
   .lc-field label {
-    display: block; font-size: 13px; color: var(--lc-sub);
-    text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 4px;
+    display: block; font-size: 11px; color: var(--text-faint);
+    text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;
   }
-  #lc-root input[type="date"], #lc-root input[type="time"], #lc-root input[type="text"],
-  #lc-root select {
-    width: 100%; font-family: inherit; font-size: 17px; letter-spacing: 0.3px;
-    padding: 9px 12px; border: 1px solid var(--lc-line); border-radius: 12px;
-    background: #0f0d1a; color: var(--lc-ink);
-    color-scheme: dark;
-  }
-  #lc-root input:focus, #lc-root select:focus { outline: 2px solid var(--lc-accent); outline-offset: 1px; }
 
-  .lc-geo-row { display: flex; gap: 10px; }
+  input[type="date"], input[type="time"], input[type="text"], select {
+    width: 100%; font-family: var(--font-body); font-weight: 300; font-size: 15px;
+    padding: 9px 11px; border: 1px solid var(--card-border); border-radius: var(--radius-sm);
+    background: var(--bg-1); color: var(--text-hi); color-scheme: dark;
+  }
+  input:focus, select:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+
+  .lc-location-label {
+    margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--card-border);
+    font-size: 11px; text-transform: uppercase; letter-spacing: 1.6px;
+    color: var(--text-faint); font-weight: 700;
+  }
+
+  .lc-geo-row { display: flex; gap: 8px; margin-top: 8px; }
   .lc-geo-row input { flex: 1; }
-  button.lc-mini-btn {
-    flex: 0 0 auto; border: 1px solid var(--lc-accent); color: var(--lc-accent);
-    background: transparent; border-radius: 12px; padding: 0 18px; font-size: 15px;
-    font-family: inherit; letter-spacing: 0.8px; cursor: pointer; white-space: nowrap;
-  }
-  button.lc-mini-btn:active { background: var(--lc-chip); }
-  .lc-geo-status { font-size: 13.5px; margin-top: 5px; min-height: 1.1em; letter-spacing: 0.2px; color: var(--lc-sub); }
-  .lc-geo-status.lc-ok { color: var(--lc-green); }
-  .lc-geo-status.lc-err { color: var(--lc-red); }
+  .lc-locate-btn { flex: 0 0 auto; padding: 0 16px; }
+  .lc-geo-status { font-size: 12px; margin-top: 6px; min-height: 1.1em; color: var(--text-faint); }
+  .lc-geo-status.lc-ok { color: #3fe0a0; }
+  .lc-geo-status.lc-err { color: #fca5a5; }
 
-  .lc-chips { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 8px; }
-  button.lc-chip {
-    font-family: inherit; font-size: 14px; letter-spacing: 0.5px;
-    padding: 7px 14px; border-radius: 999px; border: 1px solid var(--lc-line);
-    background: var(--lc-chip); color: var(--lc-ink); cursor: pointer;
+  .lc-chips { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 10px; }
+  .lc-chip {
+    font-family: var(--font-body); font-weight: 300; font-size: 13px; letter-spacing: 0.5px;
+    padding: 7px 13px; border-radius: 999px; border: 1px solid var(--card-border);
+    background: var(--bg-1); color: var(--text-lo); cursor: pointer;
   }
-  button.lc-chip.lc-chip-active { background: linear-gradient(90deg, var(--lc-accent), var(--lc-accent-2)); border-color: transparent; color: #16101f; }
-  button.lc-chip:active { transform: scale(0.97); }
+  .lc-chip.active { background: var(--accent); border-color: var(--accent); color: var(--bg-0); }
 
-  .lc-error {
-    margin-top: 10px; padding: 10px 14px; border-radius: 12px; font-size: 15px;
-    background: rgba(255,92,108,0.1); color: #ffb3ba; border: 1px solid rgba(255,92,108,0.35); letter-spacing: 0.3px;
-  }
+  .lc-meter-loc { font-size: 17px; font-weight: 600; color: var(--text-hi); margin: 0 0 8px; }
 
-  /* Results — sits right under the header, always visible */
-  .lc-meter-card {
-    text-align: center; border-radius: 22px; padding: 16px 18px 16px; margin-bottom: 10px;
-    background: var(--lc-card); border: 1px solid var(--lc-line);
-  }
-  .lc-meter-loc {
-    font-size: 22px; font-weight: 700; letter-spacing: 0.4px; margin: 0 0 8px;
-    color: var(--lc-ink);
-  }
-  .lc-gauge { position: relative; width: 168px; height: 92px; margin: 0 auto; }
-  .lc-gauge svg { width: 100%; height: 100%; display: block; overflow: visible; }
-  .lc-gauge-pct {
-    position: absolute; bottom: 0; left: 0; right: 0; text-align: center;
-    font-size: 32px; font-weight: 700; letter-spacing: 0.3px;
-  }
-  .lc-gauge-word {
-    font-size: 13px; text-transform: uppercase; letter-spacing: 1.6px; font-weight: 700;
-    margin-top: 6px;
-  }
-
-  .lc-tabs { display: flex; gap: 6px; margin-top: 12px; border-bottom: 1px solid var(--lc-line); }
-  button.lc-tab {
-    flex: 1; font-family: inherit; font-size: 13.5px; text-transform: uppercase;
-    letter-spacing: 1px; font-weight: 700; color: var(--lc-sub);
-    background: transparent; border: none; border-bottom: 2px solid transparent;
-    padding: 8px 4px; cursor: pointer;
-  }
-  button.lc-tab.lc-tab-active { color: var(--lc-accent-2); border-bottom-color: var(--lc-accent-2); }
-  .lc-tab-box {
-    text-align: left; margin-top: 10px; padding: 14px 16px; border-radius: 16px;
-    background: #0f0d1a; border: 1px solid var(--lc-line); min-height: 40px;
-  }
-  .lc-tab-box p { margin: 0 0 8px; font-size: 16px; letter-spacing: 0.3px; color: var(--lc-ink); }
+  .lc-tabs { display: flex; gap: 8px; margin-top: 16px; }
+  .lc-tab-box p { margin: 0 0 8px; font-size: 14.5px; color: var(--text-hi); }
   .lc-tab-box p:last-child { margin-bottom: 0; }
-  .lc-sign-name { font-weight: 700; color: var(--lc-accent-2); }
-  .lc-none { color: var(--lc-sub); font-style: italic; }
-
-  .lc-legal {
-    margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--lc-line);
-    text-align: center; font-size: 13.5px; color: var(--lc-sub); letter-spacing: 0.4px;
-  }
-  .lc-legal a { color: var(--lc-accent); text-decoration: none; }
-  .lc-legal a:hover { text-decoration: underline; }
-  .lc-legal .lc-sep { margin: 0 7px; color: var(--lc-line); }
-
-  @media (max-width: 480px) {
-    #lc-root.lc-root { font-size: 16px; padding: 14px 14px 18px; }
-    .lc-title { font-size: 26px; }
-    .lc-gauge { width: 150px; height: 84px; }
-    .lc-gauge-pct { font-size: 27px; }
-  }
+  .lc-sign-name { font-weight: 600; color: var(--accent); }
+  .lc-none { color: var(--text-faint); font-style: italic; }
 </style>
 </head>
-<body>
+<body data-theme="space">
 
-<div id="lc-root" class="lc-root">
+<div class="app">
 
-  <div class="lc-header">
-    <h1 class="lc-title">Location Checker</h1>
-  </div>
+  <header>
+    <div class="title-block"><h1>Location Checker</h1></div>
+  </header>
 
-  <div class="lc-results" id="lc-results"></div>
+  <div class="meter-card" id="lc-results"></div>
 
-  <form id="lc-form">
-    <div class="lc-card">
+  <div class="zodiac-card">
+    <form id="lc-form">
       <div class="lc-row">
         <div class="lc-field">
           <label for="lc-bdate">Date of birth</label>
@@ -186,25 +93,25 @@
         </div>
       </div>
 
-      <p class="lc-card-label lc-card-label-mid">Location</p>
+      <p class="lc-location-label">Location</p>
       <div class="lc-geo-row">
         <input type="text" id="lc-place" placeholder="Type a city..." autocomplete="off">
-        <button type="button" class="lc-mini-btn" id="lc-geo-btn">Locate</button>
+        <button type="button" class="toggle-btn lc-locate-btn" id="lc-geo-btn">Locate</button>
       </div>
       <div class="lc-geo-status" id="lc-geo-status"></div>
       <div class="lc-chips" id="lc-city-chips"></div>
-    </div>
-
-    <div class="lc-error" id="lc-error" style="display:none;"></div>
-  </form>
-
-  <div class="lc-legal">
-    <a href="disclaimer.html" target="_blank" rel="noopener">Disclaimer</a>
-    <span class="lc-sep">&middot;</span>
-    <a href="privacy.html" target="_blank" rel="noopener">Privacy</a>
-    <span class="lc-sep">&middot;</span>
-    <a href="https://lifeprediction.net" target="_blank" rel="noopener">lifeprediction.net</a>
+    </form>
   </div>
+
+  <div class="out-of-range" id="lc-error"></div>
+
+  <footer>
+    <a href="disclaimer.html" target="_blank" rel="noopener">Disclaimer</a>
+    <span class="sep">&middot;</span>
+    <a href="privacy.html" target="_blank" rel="noopener">Privacy</a>
+    <span class="sep">&middot;</span>
+    <a href="https://lifeprediction.net" target="_blank" rel="noopener">lifeprediction.net</a>
+  </footer>
 
 </div>
 
@@ -232,7 +139,6 @@
   ];
   var DEFAULT_CITY = CITIES[2]; // London
 
-  var form = document.getElementById("lc-form");
   var resultsEl = document.getElementById("lc-results");
   var errorEl = document.getElementById("lc-error");
   var utcSelect = document.getElementById("lc-utc");
@@ -316,13 +222,13 @@
     btn.type = "button";
     btn.className = "lc-chip";
     btn.textContent = c.name;
-    if (c === DEFAULT_CITY) { btn.classList.add("lc-chip-active"); activeChip = btn; }
+    if (c === DEFAULT_CITY) { btn.classList.add("active"); activeChip = btn; }
     btn.addEventListener("click", function () {
       currentLat = c.lat; currentLon = c.lon; currentLabel = c.name;
       placeInput.value = c.name;
       geoStatus.textContent = "";
-      if (activeChip) activeChip.classList.remove("lc-chip-active");
-      btn.classList.add("lc-chip-active");
+      if (activeChip) activeChip.classList.remove("active");
+      btn.classList.add("active");
       activeChip = btn;
       tryCompute();
     });
@@ -330,7 +236,7 @@
   });
 
   function clearChipSelection() {
-    if (activeChip) { activeChip.classList.remove("lc-chip-active"); activeChip = null; }
+    if (activeChip) { activeChip.classList.remove("active"); activeChip = null; }
   }
 
   placeInput.addEventListener("input", clearChipSelection);
@@ -363,26 +269,8 @@
     el.addEventListener("change", tryCompute);
   });
 
-  function showError(msg) { errorEl.textContent = msg; errorEl.style.display = "block"; }
-  function clearError() { errorEl.style.display = "none"; errorEl.textContent = ""; }
-
-  // Robust semicircle gauge: both the track and the fill are the exact same
-  // path (so they're always perfectly concentric/aligned), and the fill's
-  // percentage is revealed with stroke-dasharray/dashoffset rather than by
-  // computing a second arc endpoint — that avoids the classic SVG arc
-  // ambiguity where two different (large-arc, sweep) flag combinations can
-  // resolve to two different circle centers and visibly "escape" the track.
-  function gaugeSvg(pct, color) {
-    var cx = 84, cy = 84, r = 66, sw = 16;
-    var d = 'M ' + (cx - r) + ' ' + cy + ' A ' + r + ' ' + r + ' 0 1 1 ' + (cx + r) + ' ' + cy;
-    var len = Math.PI * r;
-    var offset = len * (1 - pct / 100);
-    return '<svg viewBox="0 0 168 94">' +
-      '<path d="' + d + '" fill="none" stroke="#2b2542" stroke-width="' + sw + '" stroke-linecap="round"/>' +
-      '<path d="' + d + '" fill="none" stroke="' + color + '" stroke-width="' + sw + '" stroke-linecap="round" ' +
-      'stroke-dasharray="' + len + ' ' + len + '" stroke-dashoffset="' + offset + '"/>' +
-      '</svg>';
-  }
+  function showError(msg) { errorEl.textContent = msg; errorEl.className = "out-of-range show"; }
+  function clearError() { errorEl.className = "out-of-range"; errorEl.textContent = ""; }
 
   function cap(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
   function escapeHtml(s) {
@@ -416,27 +304,27 @@
     var word = r.pct <= 30 ? "Lower safety read" : (r.pct >= 70 ? "Higher safety read" : "Mixed safety read");
 
     var html = "";
-    html += '<div class="lc-meter-card">';
     html += '<p class="lc-meter-loc">' + escapeHtml(r.locationLabel) + '</p>';
-    html += '<div class="lc-gauge">' + gaugeSvg(r.pct, colorHex) + '<div class="lc-gauge-pct" style="color:' + colorHex + '">' + r.pct + '%</div></div>';
-    html += '<div class="lc-gauge-word" style="color:' + colorHex + '">' + word + '</div>';
+    html += '<div class="meter-pct" style="color:' + colorHex + '">' + r.pct + '%</div>';
+    html += '<div class="meter-status" style="color:' + colorHex + '; font-weight:700; text-transform:uppercase; letter-spacing:1.5px;">' + word + '</div>';
+    html += '<div class="meter-track"><div class="meter-fill" style="width:' + r.pct + '%; background:' + colorHex + ';"></div></div>';
+    html += '<div class="meter-scale"><span>0</span><span>50</span><span>100</span></div>';
 
-    html += '<div class="lc-tabs">' +
-      '<button type="button" class="lc-tab" data-tab="sign">Sign</button>' +
-      '<button type="button" class="lc-tab" data-tab="aspects">Aspects</button>' +
-      '<button type="button" class="lc-tab" data-tab="midpoints">Midpoints</button>' +
+    html += '<div class="gender-toggle lc-tabs">' +
+      '<button type="button" class="toggle-btn" data-tab="sign">Sign</button>' +
+      '<button type="button" class="toggle-btn" data-tab="aspects">Aspects</button>' +
+      '<button type="button" class="toggle-btn" data-tab="midpoints">Midpoints</button>' +
       '</div>';
-    html += '<div class="lc-tab-box" id="lc-tab-box"></div>';
-    html += '</div>';
+    html += '<div class="collapsible-panel open lc-tab-box" id="lc-tab-box"></div>';
     resultsEl.innerHTML = html;
 
-    var tabButtons = resultsEl.querySelectorAll(".lc-tab");
+    var tabButtons = resultsEl.querySelectorAll(".toggle-btn");
     tabButtons.forEach(function (btn) {
-      if (btn.getAttribute("data-tab") === activeTab) btn.classList.add("lc-tab-active");
+      if (btn.getAttribute("data-tab") === activeTab) btn.classList.add("active");
       btn.addEventListener("click", function () {
         activeTab = btn.getAttribute("data-tab");
-        tabButtons.forEach(function (b) { b.classList.remove("lc-tab-active"); });
-        btn.classList.add("lc-tab-active");
+        tabButtons.forEach(function (b) { b.classList.remove("active"); });
+        btn.classList.add("active");
         document.getElementById("lc-tab-box").innerHTML = tabContent(activeTab, lastResult);
       });
     });
@@ -462,7 +350,7 @@
     }
   }
 
-  form.addEventListener("submit", function (e) { e.preventDefault(); tryCompute(); });
+  document.getElementById("lc-form").addEventListener("submit", function (e) { e.preventDefault(); tryCompute(); });
 
   // ---- content tables ----
   var SIGN_TEXT = {
