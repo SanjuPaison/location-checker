@@ -27,10 +27,16 @@
     text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;
   }
 
-  input[type="date"], input[type="time"], input[type="text"], select {
+  input[type="text"], select {
     width: 100%; font-family: var(--font-body); font-weight: 300; font-size: 15px;
     padding: 9px 11px; border: 1px solid var(--card-border); border-radius: var(--radius-sm);
-    background: var(--bg-1); color: var(--text-hi); color-scheme: dark;
+    background: var(--bg-1); color: var(--text-hi);
+  }
+  .lc-dob-row, .lc-tob-row { display: flex; gap: 6px; }
+  .lc-dob-row select, .lc-tob-row select {
+    width: 100%; font-family: var(--font-body); font-weight: 300; font-size: 15px;
+    padding: 9px 6px; border: 1px solid var(--card-border); border-radius: var(--radius-sm);
+    background: var(--bg-1); color: var(--text-hi);
   }
   input:focus, select:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
 
@@ -78,12 +84,20 @@
     <form id="lc-form">
       <div class="lc-row">
         <div class="lc-field">
-          <label for="lc-bdate">Date of birth</label>
-          <input type="date" id="lc-bdate" required min="1900-01-01" max="2060-12-31">
+          <label for="lc-bmonth">Date of birth</label>
+          <div class="lc-dob-row">
+            <select id="lc-bmonth" required><option value="" disabled selected>Month</option></select>
+            <select id="lc-bday" required><option value="" disabled selected>Day</option></select>
+            <select id="lc-byear" required><option value="" disabled selected>Year</option></select>
+          </div>
         </div>
         <div class="lc-field">
-          <label for="lc-btime">Time of birth</label>
-          <input type="time" id="lc-btime" required>
+          <label for="lc-bhour">Time of birth</label>
+          <div class="lc-tob-row">
+            <select id="lc-bhour" required><option value="" disabled selected>Hour</option></select>
+            <select id="lc-bminute" required><option value="" disabled selected>Min</option></select>
+            <select id="lc-bampm" required><option value="" disabled selected>AM/PM</option></select>
+          </div>
         </div>
       </div>
       <div class="lc-row">
@@ -144,8 +158,12 @@
   var resultsEl = document.getElementById("lc-results");
   var errorEl = document.getElementById("lc-error");
   var utcSelect = document.getElementById("lc-utc");
-  var dateInput = document.getElementById("lc-bdate");
-  var timeInput = document.getElementById("lc-btime");
+  var monthSelect = document.getElementById("lc-bmonth");
+  var daySelect = document.getElementById("lc-bday");
+  var yearSelect = document.getElementById("lc-byear");
+  var hourSelect = document.getElementById("lc-bhour");
+  var minuteSelect = document.getElementById("lc-bminute");
+  var ampmSelect = document.getElementById("lc-bampm");
   var placeInput = document.getElementById("lc-place");
   var geoBtn = document.getElementById("lc-geo-btn");
   var geoStatus = document.getElementById("lc-geo-status");
@@ -158,10 +176,50 @@
 
   function pad(n) { return n < 10 ? "0" + n : "" + n; }
 
+  // ---- populate the month/day/year and hour/minute/AM-PM dropdowns ----
+  var MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+  MONTHS.forEach(function (name, i) {
+    var opt = document.createElement("option");
+    opt.value = i + 1; opt.textContent = name;
+    monthSelect.appendChild(opt);
+  });
+  for (var d = 1; d <= 31; d++) {
+    var opt = document.createElement("option");
+    opt.value = d; opt.textContent = d;
+    daySelect.appendChild(opt);
+  }
+  var nowYear = new Date().getFullYear();
+  for (var y = 2060; y >= 1900; y--) {
+    var opt = document.createElement("option");
+    opt.value = y; opt.textContent = y;
+    yearSelect.appendChild(opt);
+  }
+  for (var h = 1; h <= 12; h++) {
+    var opt = document.createElement("option");
+    opt.value = h; opt.textContent = pad(h);
+    hourSelect.appendChild(opt);
+  }
+  for (var m = 0; m <= 59; m++) {
+    var opt = document.createElement("option");
+    opt.value = m; opt.textContent = pad(m);
+    minuteSelect.appendChild(opt);
+  }
+  ["AM", "PM"].forEach(function (p) {
+    var opt = document.createElement("option");
+    opt.value = p; opt.textContent = p;
+    ampmSelect.appendChild(opt);
+  });
+
   // ---- defaults: today's date/time so a reading is visible immediately ----
   var now = new Date();
-  dateInput.value = now.getFullYear() + "-" + pad(now.getMonth() + 1) + "-" + pad(now.getDate());
-  timeInput.value = pad(now.getHours()) + ":" + pad(now.getMinutes());
+  monthSelect.value = now.getMonth() + 1;
+  daySelect.value = now.getDate();
+  yearSelect.value = nowYear;
+  var nowHour24 = now.getHours();
+  var nowHour12 = nowHour24 % 12; if (nowHour12 === 0) nowHour12 = 12;
+  hourSelect.value = nowHour12;
+  minuteSelect.value = now.getMinutes();
+  ampmSelect.value = nowHour24 >= 12 ? "PM" : "AM";
 
   // UTC offset options, each paired with a major city on that offset, default
   // to the browser's own local offset
@@ -267,7 +325,7 @@
       });
   });
 
-  [dateInput, timeInput, utcSelect].forEach(function (el) {
+  [monthSelect, daySelect, yearSelect, hourSelect, minuteSelect, ampmSelect, utcSelect].forEach(function (el) {
     el.addEventListener("change", tryCompute);
   });
 
@@ -335,15 +393,20 @@
 
   function tryCompute() {
     clearError();
-    if (!dateInput.value || !timeInput.value) return;
+    if (!monthSelect.value || !daySelect.value || !yearSelect.value ||
+        !hourSelect.value || !minuteSelect.value || !ampmSelect.value) return;
 
-    var bParts = dateInput.value.split("-").map(Number);
-    var tParts = timeInput.value.split(":").map(Number);
+    var bYear = parseInt(yearSelect.value, 10);
+    var bMonth = parseInt(monthSelect.value, 10);
+    var bDay = parseInt(daySelect.value, 10);
+    var hour24 = parseInt(hourSelect.value, 10) % 12;
+    if (ampmSelect.value === "PM") hour24 += 12;
+    var minute = parseInt(minuteSelect.value, 10);
     var utcOffset = parseFloat(utcSelect.value);
 
     try {
-      var utHour = tParts[0] + tParts[1] / 60 - utcOffset;
-      var jd = LCAstro.julianDay(bParts[0], bParts[1], bParts[2], utHour);
+      var utHour = hour24 + minute / 60 - utcOffset;
+      var jd = LCAstro.julianDay(bYear, bMonth, bDay, utHour);
       var result = LCAstro.computeReading(jd, currentLat, currentLon);
       result.locationLabel = currentLabel;
       renderResults(result);
