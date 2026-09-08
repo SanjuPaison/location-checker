@@ -315,7 +315,7 @@
         currentLon = parseFloat(res[0].lon);
         currentLabel = res[0].display_name.split(",")[0];
         clearChipSelection();
-        geoStatus.textContent = "Found: " + res[0].display_name.split(",").slice(0,2).join(",");
+        geoStatus.textContent = "Found: " + res[0].display_name;
         geoStatus.className = "lc-geo-status lc-ok";
         tryCompute();
       })
