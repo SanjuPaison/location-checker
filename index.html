@@ -135,6 +135,10 @@
 (function () {
   "use strict";
 
+  // Endpoint for the hidden scoring logic (sign/degree, aspects, midpoints,
+  // percentage). Replace with your deployed Cloudflare Worker URL.
+  var COMPUTE_API_URL = "https://location-checker-api.YOUR-SUBDOMAIN.workers.dev";
+
   var CITIES = [
     { name: "Bangkok", lat: 13.7563, lon: 100.5018 },
     { name: "Hong Kong", lat: 22.3193, lon: 114.1694 },
@@ -411,9 +415,29 @@
     try {
       var utHour = hour24 + minute / 60 - utcOffset;
       var jd = LCAstro.julianDay(bYear, bMonth, bDay, utHour);
-      var result = LCAstro.computeReading(jd, currentLat, currentLon);
-      result.locationLabel = currentLabel;
-      renderResults(result);
+      var ascRelocated = LCAstro.ascendantLongitude(jd, currentLat, currentLon);
+      var natalInfo = LCAstro.getNatalLongitudes(jd); // { natal, approximate }
+
+      fetch(COMPUTE_API_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          ascRelocated: ascRelocated,
+          natal: natalInfo.natal,
+          approximate: natalInfo.approximate
+        })
+      })
+        .then(function (resp) {
+          if (!resp.ok) throw new Error("Server returned an error.");
+          return resp.json();
+        })
+        .then(function (result) {
+          result.locationLabel = currentLabel;
+          renderResults(result);
+        })
+        .catch(function (err) {
+          showError(err.message || "Something went wrong computing this reading.");
+        });
     } catch (err) {
       showError(err.message || "Something went wrong computing this reading.");
     }
