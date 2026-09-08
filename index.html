@@ -137,7 +137,7 @@
 
   // Endpoint for the hidden scoring logic (sign/degree, aspects, midpoints,
   // percentage). Replace with your deployed Cloudflare Worker URL.
-  var COMPUTE_API_URL = "https://location-checker-api.sanjupaison.workers.dev/";
+  var COMPUTE_API_URL = "https://location-checker-api.YOUR-SUBDOMAIN.workers.dev";
 
   var CITIES = [
     { name: "Bangkok", lat: 13.7563, lon: 100.5018 },
@@ -308,7 +308,15 @@
 
   geoBtn.addEventListener("click", function () {
     var place = placeInput.value.trim();
-    if (!place) { geoStatus.textContent = "Type a place first."; geoStatus.className = "lc-geo-status lc-err"; return; }
+    // No new place typed (empty, or unchanged from the already-resolved
+    // location) — just recalculate with the current lat/lon. This lets
+    // "Locate" double as the general "recalculate now" action after
+    // changing the date/time fields, without re-hitting the geocoder.
+    if (!place || place === currentLabel) {
+      geoStatus.textContent = "";
+      tryCompute();
+      return;
+    }
     geoStatus.textContent = "Searching...";
     geoStatus.className = "lc-geo-status";
     var url = "https://nominatim.openstreetmap.org/search?format=json&limit=1&q=" + encodeURIComponent(place);
@@ -330,9 +338,9 @@
       });
   });
 
-  [monthSelect, daySelect, yearSelect, hourSelect, minuteSelect, ampmSelect, utcSelect].forEach(function (el) {
-    el.addEventListener("change", tryCompute);
-  });
+  // Date/time fields intentionally do NOT auto-recalculate (each change
+  // would hit the API). Press "Locate" to recalculate with the current
+  // location after adjusting them.
 
   function showError(msg) { errorEl.textContent = msg; errorEl.className = "out-of-range show"; }
   function clearError() { errorEl.className = "out-of-range"; errorEl.textContent = ""; }
