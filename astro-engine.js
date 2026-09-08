@@ -2,13 +2,16 @@
  * LCAstro — self-contained astronomical + astrological calculation engine
  * for the Location Checker widget.
  *
- * Everything here runs client-side, in the browser, with no server or
- * external ephemeris file. It uses standard low-precision formulas that
- * are widely published in astronomical references (Julian Day, GMST,
- * mean obliquity, the ascendant formula, a truncated Sun/Moon series,
- * and the JPL/Standish approximate Keplerian elements for the planets).
- * Accuracy is roughly arc-minutes to about a degree for the outer
- * planets — more than enough for aspect orbs of a few degrees.
+ * Planet positions now come from LC_EPHEMERIS when it's loaded (see
+ * ephemeris-data.js — Swiss Ephemeris-derived daily positions, 1900-2200,
+ * linearly interpolated between days to the birth minute). This is
+ * arc-second-grade source data, versus the previous truncated analytic
+ * series. If ephemeris-data.js isn't loaded, or the birth date falls
+ * outside 1900-01-01 to 2200-12-31, this file transparently falls back
+ * to the original low-precision formulas below (Julian Day, GMST, mean
+ * obliquity, the ascendant formula, a truncated Sun/Moon series, and the
+ * JPL/Standish approximate Keplerian elements for the planets) so the
+ * widget never breaks.
  *
  * The location point is computed as RelocatedAscendant - 135 degrees,
  * where the "relocated" ascendant is computed using the birth date/time
@@ -93,6 +96,57 @@
       - 0.015 * Math.sin(2 * Fr - 2 * Dr)
       + 0.011 * Math.sin(Mpr - 4 * Dr);
     return norm360(Lp + dl);
+  }
+
+  // ---- Ephemeris-backed longitude lookup (Swiss Ephemeris data, interpolated) ----
+  // Falls back to the analytic formulas above whenever the data file isn't
+  // present or the requested date is outside its covered range.
+  var EPHEMERIS_PLANET_INDEX = { sun: 0, moon: 1, mercury: 2, venus: 3, mars: 4, jupiter: 5, saturn: 6, uranus: 7, neptune: 8, pluto: 9 };
+  var ephemerisStartJD = null; // computed lazily, once, from LC_EPHEMERIS.startDate
+
+  function ephemerisAvailable() {
+    return !!(global.LC_EPHEMERIS && global.LC_EPHEMERIS.data && global.LC_EPHEMERIS.data.length);
+  }
+
+  function getEphemerisStartJD() {
+    if (ephemerisStartJD === null && ephemerisAvailable()) {
+      var parts = global.LC_EPHEMERIS.startDate.split("-");
+      ephemerisStartJD = julianDay(parseInt(parts[0], 10), parseInt(parts[1], 10), parseInt(parts[2], 10), 0);
+    }
+    return ephemerisStartJD;
+  }
+
+  // Interpolates the shorter angular path between two longitudes so a
+  // planet crossing 359° -> 002° doesn't get pulled the long way around.
+  function interpolateAngle(deg1, deg2, frac) {
+    var diff = deg2 - deg1;
+    if (diff > 180) diff -= 360;
+    if (diff < -180) diff += 360;
+    return norm360(deg1 + diff * frac);
+  }
+
+  // Returns the ephemeris-derived longitude for a planet at jdUT, or null
+  // if the data file isn't loaded or jdUT falls outside its date range.
+  function ephemerisLongitude(name, jdUT) {
+    if (!ephemerisAvailable()) return null;
+    var eph = global.LC_EPHEMERIS;
+    var planetIdx = EPHEMERIS_PLANET_INDEX[name];
+    if (planetIdx === undefined) return null;
+
+    var startJD = getEphemerisStartJD();
+    var offset = jdUT - startJD;
+    if (offset < 0 || offset > eph.dayCount - 1) return null; // out of covered range
+
+    var dayIndex = Math.floor(offset);
+    var frac = offset - dayIndex;
+    var scale = eph.scale || 100;
+    var row1 = dayIndex * 10 + planetIdx;
+    var v1 = eph.data[row1] / scale;
+
+    if (dayIndex >= eph.dayCount - 1) return norm360(v1); // last day in table, no next point to interpolate to
+    var row2 = (dayIndex + 1) * 10 + planetIdx;
+    var v2 = eph.data[row2] / scale;
+    return interpolateAngle(v1, v2, frac);
   }
 
   // ---- Approximate planetary Keplerian elements (JPL/Standish, J2000) ----
@@ -180,19 +234,58 @@
     var signIndex = Math.floor(rn / 30);
     var degInSign = rn - signIndex * 30;
 
-    var natal = {
-      sun: sunLongitude(jdBirthUT),
-      moon: moonLongitude(jdBirthUT),
-      mercury: planetGeoLongitude("mercury", jdBirthUT),
-      venus: planetGeoLongitude("venus", jdBirthUT),
-      mars: planetGeoLongitude("mars", jdBirthUT),
-      jupiter: planetGeoLongitude("jupiter", jdBirthUT),
-      saturn: planetGeoLongitude("saturn", jdBirthUT),
-      uranus: planetGeoLongitude("uranus", jdBirthUT),
-      neptune: planetGeoLongitude("neptune", jdBirthUT),
-      pluto: planetGeoLongitude("pluto", jdBirthUT)
-    };
     var order = ["sun", "moon", "mercury", "venus", "mars", "jupiter", "saturn", "uranus", "neptune", "pluto"];
+    var FALLBACK_LONGITUDE = {
+      sun: sunLongitude,
+      moon: moonLongitude,
+      mercury: function (jd) { return planetGeoLongitude("mercury", jd); },
+      venus: function (jd) { return planetGeoLongitude("venus", jd); },
+      mars: function (jd) { return planetGeoLongitude("mars", jd); },
+      jupiter: function (jd) { return planetGeoLongitude("jupiter", jd); },
+      saturn: function (jd) { return planetGeoLongitude("saturn", jd); },
+      uranus: function (jd) { return planetGeoLongitude("uranus", jd); },
+      neptune: function (jd) { return planetGeoLongitude("neptune", jd); },
+      pluto: function (jd) { return planetGeoLongitude("pluto", jd); }
+    };
+
+    // The analytic fallback formulas drift further from truth the further a
+    // date sits from J2000 (roughly +1-2 degrees of error per century,
+    // worst for the Moon) — measured against the ephemeris itself across
+    // its own covered span. Left unchecked outside that span, this would
+    // extrapolate to errors easily large enough to flip a sign or aspect,
+    // so it must never be used silently for a birth date the ephemeris
+    // doesn't actually cover.
+    //
+    // Two different situations, handled differently:
+    //  - Ephemeris data file didn't load at all (network hiccup, blocked
+    //    request): every planet lookup returns null uniformly. This is a
+    //    genuine "keep the widget alive" case — fall back, but flag the
+    //    result as approximate so the UI can be honest about it.
+    //  - Birth date is simply outside 1900-01-01..2200-12-31: hard stop.
+    //    The UI's own date pickers are capped to this range, so reaching
+    //    this path means something bypassed them (e.g. a crafted request);
+    //    refuse rather than quietly serving an inaccurate reading.
+    var natal = {};
+    var anyResolved = false;
+    order.forEach(function (name) {
+      var eph = ephemerisLongitude(name, jdBirthUT);
+      if (eph !== null) { natal[name] = eph; anyResolved = true; }
+    });
+
+    var usedFallback = false;
+    if (Object.keys(natal).length < order.length) {
+      if (!ephemerisAvailable()) {
+        // Data file genuinely absent — approximate for every planet so the
+        // widget still works, but say so.
+        usedFallback = true;
+        order.forEach(function (name) {
+          if (natal[name] === undefined) natal[name] = FALLBACK_LONGITUDE[name](jdBirthUT);
+        });
+      } else {
+        // Data file loaded fine; this date is just outside what it covers.
+        throw new Error("This birth date falls outside the supported range (1900-01-01 to 2200-12-31) for accurate calculations.");
+      }
+    }
 
     var planetAspects = [];
     order.forEach(function (name) {
@@ -232,7 +325,8 @@
       degInSign: degInSign,
       pct: safetyPercent(degInSign),
       planetAspects: planetAspects,
-      midpointHits: midpointHits
+      midpointHits: midpointHits,
+      approximate: usedFallback
     };
   }
 
@@ -242,6 +336,7 @@
     sunLongitude: sunLongitude,
     moonLongitude: moonLongitude,
     planetGeoLongitude: planetGeoLongitude,
+    ephemerisLongitude: ephemerisLongitude,
     computeReading: computeReading
   };
 })(window);

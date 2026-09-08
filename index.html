@@ -129,6 +129,7 @@
 
 </div>
 
+<script src="ephemeris-data.js"></script>
 <script src="astro-engine.js"></script>
 <script>
 (function () {
@@ -189,7 +190,7 @@
     daySelect.appendChild(opt);
   }
   var nowYear = new Date().getFullYear();
-  for (var y = 2060; y >= 1900; y--) {
+  for (var y = 2200; y >= 1900; y--) {
     var opt = document.createElement("option");
     opt.value = y; opt.textContent = y;
     yearSelect.appendChild(opt);
@@ -365,6 +366,9 @@
 
     var html = "";
     html += '<p class="lc-meter-loc">' + escapeHtml(r.locationLabel) + '</p>';
+    if (r.approximate) {
+      html += '<p class="lc-geo-status lc-err" style="margin:0 0 10px;">Precise ephemeris data failed to load — this reading uses lower-accuracy approximate calculations.</p>';
+    }
     html += '<div class="meter-pct" style="color:' + colorHex + '">' + r.pct + '%</div>';
     html += '<div class="meter-status" style="color:' + colorHex + '; font-weight:700; text-transform:uppercase; letter-spacing:1.5px;">' + word + '</div>';
     html += '<div class="meter-track"><div class="meter-fill" style="width:' + r.pct + '%; background:' + colorHex + ';"></div></div>';
