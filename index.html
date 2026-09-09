@@ -137,7 +137,7 @@
 
   // Endpoint for the hidden scoring logic (sign/degree, aspects, midpoints,
   // percentage). Replace with your deployed Cloudflare Worker URL.
-  var COMPUTE_API_URL = "https://location-checker-api.sanjupaison.workers.dev/";
+  var COMPUTE_API_URL = "https://location-checker-api.YOUR-SUBDOMAIN.workers.dev";
 
   var CITIES = [
     { name: "Bangkok", lat: 13.7563, lon: 100.5018 },
@@ -378,9 +378,6 @@
 
     var html = "";
     html += '<p class="lc-meter-loc">' + escapeHtml(r.locationLabel) + '</p>';
-    if (r.isExample) {
-      html += '<p class="lc-geo-status" style="margin:0 0 10px;">Example reading (London, Jan 1 2000) — pick your own city and birth details above to see yours.</p>';
-    }
     if (r.approximate) {
       html += '<p class="lc-geo-status lc-err" style="margin:0 0 10px;">Precise ephemeris data failed to load — this reading uses lower-accuracy approximate calculations.</p>';
     }
@@ -503,8 +500,7 @@
     planetAspects: [{ planet: "pluto", aspect: "Conjunction", orb: 2.430333816462678 }],
     midpointHits: [{ a: "moon", b: "mercury", orb: 1.4271661835373095 }],
     approximate: false,
-    locationLabel: "London",
-    isExample: true
+    locationLabel: "London"
   });
 })();
 </script>
