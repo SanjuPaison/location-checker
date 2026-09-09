@@ -137,7 +137,7 @@
 
   // Endpoint for the hidden scoring logic (sign/degree, aspects, midpoints,
   // percentage). Replace with your deployed Cloudflare Worker URL.
-  var COMPUTE_API_URL = "https://location-checker-api.sanjupaison.workers.dev/";
+  var COMPUTE_API_URL = "https://location-checker-api.YOUR-SUBDOMAIN.workers.dev";
 
   var CITIES = [
     { name: "Bangkok", lat: 13.7563, lon: 100.5018 },
@@ -193,7 +193,6 @@
     opt.value = d; opt.textContent = d;
     daySelect.appendChild(opt);
   }
-  var nowYear = new Date().getFullYear();
   for (var y = 2200; y >= 1900; y--) {
     var opt = document.createElement("option");
     opt.value = y; opt.textContent = y;
@@ -215,16 +214,14 @@
     ampmSelect.appendChild(opt);
   });
 
-  // ---- defaults: today's date/time so a reading is visible immediately ----
-  var now = new Date();
-  monthSelect.value = now.getMonth() + 1;
-  daySelect.value = now.getDate();
-  yearSelect.value = nowYear;
-  var nowHour24 = now.getHours();
-  var nowHour12 = nowHour24 % 12; if (nowHour12 === 0) nowHour12 = 12;
-  hourSelect.value = nowHour12;
-  minuteSelect.value = now.getMinutes();
-  ampmSelect.value = nowHour24 >= 12 ? "PM" : "AM";
+  // ---- defaults: match the static example reading shown below (Jan 1,
+  // 2000, 12:00 PM, UTC+0, London) so the form and the sample result agree ----
+  monthSelect.value = 1;
+  daySelect.value = 1;
+  yearSelect.value = 2000;
+  hourSelect.value = 12;
+  minuteSelect.value = 0;
+  ampmSelect.value = "PM";
 
   // UTC offset options, each paired with a major city on that offset, default
   // to the browser's own local offset
@@ -269,10 +266,7 @@
     { v: 13, city: "Apia" },
     { v: 14, city: "Kiritimati" }
   ];
-  var localOffset = -now.getTimezoneOffset() / 60;
-  var closestOffset = OFFSETS.reduce(function (a, b) {
-    return Math.abs(b.v - localOffset) < Math.abs(a.v - localOffset) ? b : a;
-  }).v;
+  var closestOffset = 0; // default to UTC+0, matching the London example reading
   OFFSETS.forEach(function (o) {
     var opt = document.createElement("option");
     opt.value = o.v;
